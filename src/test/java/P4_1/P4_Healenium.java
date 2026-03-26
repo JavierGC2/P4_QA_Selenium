@@ -1,5 +1,6 @@
 package P4_1;
 
+import com.epam.healenium.SelfHealingDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -12,63 +13,66 @@ public class P4_Healenium {
 
     @Test
     public void fullFormTest() {
-        // 1. Configuración y apertura de página
+
         WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
+
+        // Driver original
+        WebDriver original = new ChromeDriver();
+
+        // Driver con Healenium
+        SelfHealingDriver driver = SelfHealingDriver.create(original);
 
         try {
             driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
             driver.manage().window().maximize();
             System.out.println("Página abierta correctamente.");
 
-            // 2. Ingresar información en campos de texto
-            // Usamos ID donde es posible
+            // 2. Campos de texto
             WebElement textInput = driver.findElement(By.id("my-text-id"));
             textInput.sendKeys("Usuario de Prueba");
 
-            // Password y Textarea no tienen ID, usamos name
             WebElement passwordInput =
                     driver.findElement(By.name("my-password"));
             passwordInput.sendKeys("Password123");
 
-            WebElement textArea = driver.findElement(By.name("my-textarea"));
-            textArea.sendKeys("Esta es una prueba de automatizació con Selenium.");
+            WebElement textArea =
+                    driver.findElement(By.name("my-textarea"));
+            textArea.sendKeys("Esta es una prueba de automatización con Healenium.");
 
-            // 3. Seleccionar opción en Dropdown
+            // 3. Dropdown
             WebElement dropdown = driver.findElement(By.name("my-select"));
             Select selectMenu = new Select(dropdown);
-            selectMenu.selectByValue("2"); // Selecciona "Two"
+            selectMenu.selectByValue("2");
             System.out.println("Dropdown seleccionado.");
 
-            Thread.sleep(1000); //Es como un delay que es lo que se hace en selenium
+            Thread.sleep(1000);
 
-
-            // 4. Interactuar con Checkbox y Radio Button
-            // Usamos ID para el Checkbox 1 y Radio 1
+            // 4. Checkbox y Radio
             WebElement checkbox = driver.findElement(By.id("my-check-2"));
-            if(!checkbox.isSelected()) {
+            if (!checkbox.isSelected()) {
                 checkbox.click();
             }
 
             WebElement radioButton = driver.findElement(By.id("my-radio-2"));
             radioButton.click();
 
-            // Interacción con Date Picker (enviando texto directamente)
+            // Date picker
             WebElement datePicker = driver.findElement(By.name("my-date"));
             datePicker.sendKeys("05/28/2026");
 
-            System.out.println("Interacciones de selección completadas.");
+            System.out.println("Interacciones completadas.");
 
-            // 5. Presionar el botón Submit
-            // Usamos un selector de CSS para el botón
+            // 5. Submit
             WebElement submitBtn =
                     driver.findElement(By.cssSelector("button[type='submit']"));
             submitBtn.click();
 
-            Thread.sleep(1000); //Es como un delay que es lo que se hace en selenium
+            Thread.sleep(1000);
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        } finally {
+            driver.quit();
         }
     }
 }
